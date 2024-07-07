@@ -1,4 +1,4 @@
-package com.example.springintegrationfiletransfer;
+package com.example.springintegrationfiletransfer.annotations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

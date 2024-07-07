@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration.xsd
+                           http://www.springframework.org/schema/integration/file
+                           http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+
+    <!-- Enable Spring Integration -->
+    <int:annotation-config />
+
+    <!-- Define the file input channel -->
+    <int:channel id="fileInputChannel" />
+
+    <!-- Define the file reading message source -->
+    <bean id="fileReadingMessageSource" class="org.springframework.integration.file.FileReadingMessageSource">
+        <property name="directory" value="file:C:\\Users\\tOxicKisses\\Desktop\\source" />
+        <property name="filter">
+            <bean class="org.springframework.integration.file.filters.CompositeFileListFilter">
+                <constructor-arg>
+                    <list>
+                        <bean class="org.springframework.integration.file.filters.SimplePatternFileListFilter">
+                            <constructor-arg value="*.txt" />
+                        </bean>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Inbound channel adapter to poll files from the source directory -->
+    <int-file:inbound-channel-adapter id="fileInboundAdapter"
+                                      channel="fileInputChannel"
+                                      directory="file:C:\\Users\\tOxicKisses\\Desktop\\source"
+                                      auto-startup="true">
+        <int:poller fixed-delay="1000"/>
+    </int-file:inbound-channel-adapter>
+
+    <!-- Define the file writing message handler -->
+    <bean id="fileWritingMessageHandler" class="org.springframework.integration.file.FileWritingMessageHandler">
+        <constructor-arg value="file:C:\\Users\\tOxicKisses\\Desktop\\Destination" />
+        <property name="autoCreateDirectory" value="true" />
+        <property name="expectReply" value="false" />
+    </bean>
+
+    <!-- Service activator to handle the files and write them to the destination directory -->
+    <int:service-activator input-channel="fileInputChannel" ref="fileWritingMessageHandler" />
+
+</beans>

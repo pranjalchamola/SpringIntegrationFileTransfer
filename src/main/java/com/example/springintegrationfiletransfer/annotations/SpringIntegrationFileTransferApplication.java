@@ -1,4 +1,4 @@
-package com.example.springintegrationfiletransfer;
+package com.example.springintegrationfiletransfer.annotations;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
